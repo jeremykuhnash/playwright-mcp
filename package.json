@@ -41,7 +41,9 @@
     "playwright-core": "1.58.0-alpha-2026-01-16"
   },
   "bin": {
-    "mcp-server-playwright": "cli.js"
+    "mcp-server-playwright": "cli.js",
+    "mcp-server-playwright-xterm": "cli-xterm.js",
+    "mcp-server-playwright-unified": "cli-unified.js"
   },
   "devDependencies": {
     "@modelcontextprotocol/sdk": "^1.24.0",
