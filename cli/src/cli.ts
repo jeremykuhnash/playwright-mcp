@@ -23,6 +23,7 @@ import fs from 'fs';
 import net from 'net';
 import os from 'os';
 import path from 'path';
+import { createRequire } from 'module';
 import { debug } from 'debug';
 import minimist from 'minimist';
 import { SocketConnection } from './socketConnection';
@@ -149,12 +150,21 @@ async function connectToDaemon(sessionName: string): Promise<SocketSession> {
     }
   }
 
-  debugCli(`Will launch daemon process: npx playwright run-mcp-server`);
+  const cwd = process.cwd(); // Used as the module resolution root.
+  const requireFromCwd = createRequire(path.resolve(cwd, 'package.json'));
+  let playwrightCliPath: string;
+  try {
+    playwrightCliPath = requireFromCwd.resolve('playwright/cli.js');
+  } catch (e) {
+    throw new Error(`Playwright is not installed in ${cwd}. Install it (e.g. \`npm i playwright\`) and try again.`);
+  }
+
+  debugCli(`Will launch daemon process: node ${playwrightCliPath} run-mcp-server`);
   const userDataDir = path.resolve(daemonSocketDir(), `${sessionName}-user-data`);
-  const child = spawn('npx', ['playwright', 'run-mcp-server', `--daemon=${socketPath}`, `--user-data-dir=${userDataDir}`], {
+  const child = spawn(process.execPath, [playwrightCliPath, 'run-mcp-server', `--daemon=${socketPath}`, `--user-data-dir=${userDataDir}`], {
     detached: true,
     stdio: 'ignore',
-    cwd: process.cwd(), // Will be used as root.
+    cwd, // Will be used as root.
   });
   child.unref();
 

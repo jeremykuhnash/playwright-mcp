@@ -267,6 +267,83 @@ const tmux = new TmuxManager();
 // Terminal Tools
 // ============================================================================
 
+function applyTerminalToolAnnotations(tools) {
+  const titleOverrides = {
+    spawn: 'Spawn terminal',
+    send_keys: 'Send keys',
+    send_text: 'Send text',
+    snapshot: 'Snapshot terminal',
+    save: 'Save terminal',
+    resize: 'Resize terminal',
+    kill: 'Kill terminal',
+    wait: 'Wait for output',
+    wait_idle: 'Wait for idle',
+    wait_prompt: 'Wait for prompt',
+    list: 'List sessions',
+    list_all: 'List tmux sessions',
+    attach: 'Attach to session',
+    detach: 'Detach from session',
+    split: 'Split pane',
+    list_panes: 'List panes',
+    select_pane: 'Select pane',
+    dump: 'Dump state',
+    compare: 'Compare to dump',
+    assert: 'Assert content',
+    record_start: 'Start recording',
+    record_stop: 'Stop recording',
+    record_save: 'Save recording',
+    send_to_pane: 'Send keys to pane',
+    capture_pane: 'Capture pane',
+    new_window: 'Create window',
+    list_windows: 'List windows',
+    select_window: 'Select window',
+  };
+
+  const readOnlyTools = new Set([
+    'terminal_snapshot',
+    'terminal_list',
+    'terminal_wait',
+    'terminal_wait_idle',
+    'terminal_wait_prompt',
+    'terminal_list_all',
+    'terminal_list_panes',
+    'terminal_capture_pane',
+    'terminal_list_windows',
+    'terminal_compare',
+    'terminal_assert',
+  ]);
+
+  const nonDestructiveTools = new Set([
+    'terminal_attach',
+    'terminal_detach',
+    'terminal_select_pane',
+    'terminal_select_window',
+    'terminal_record_start',
+    'terminal_record_stop',
+  ]);
+
+  const toSentenceCase = (snake) => {
+    const words = snake.split('_').filter(Boolean);
+    if (!words.length) return snake;
+    return [words[0][0].toUpperCase() + words[0].slice(1), ...words.slice(1)].join(' ');
+  };
+
+  for (const tool of tools) {
+    const key = tool.name.replace(/^terminal_/, '');
+    const readOnlyHint = readOnlyTools.has(tool.name);
+    const destructiveHint = !readOnlyHint && !nonDestructiveTools.has(tool.name);
+    const title = titleOverrides[key] ?? toSentenceCase(key);
+
+    tool.annotations = {
+      title,
+      readOnlyHint: readOnlyHint || undefined,
+      destructiveHint: destructiveHint || undefined,
+      idempotentHint: readOnlyHint || undefined,
+      openWorldHint: true,
+    };
+  }
+}
+
 const terminalTools = [
   { name: 'terminal_spawn', description: 'Spawn a new tmux terminal session for TUI testing.', inputSchema: { type: 'object', properties: { command: { type: 'string' }, args: { type: 'array', items: { type: 'string' } }, cols: { type: 'number' }, rows: { type: 'number' }, cwd: { type: 'string' }, env: { type: 'object' } }, required: ['command'] } },
   { name: 'terminal_send_keys', description: 'Send tmux key sequences (Enter, C-c, Escape, etc).', inputSchema: { type: 'object', properties: { id: { type: 'string' }, keys: { type: 'string' } }, required: ['id', 'keys'] } },
@@ -297,6 +374,8 @@ const terminalTools = [
   { name: 'terminal_compare', description: 'Compare to saved dump.', inputSchema: { type: 'object', properties: { id: { type: 'string' }, expected_path: { type: 'string' }, ignore_whitespace: { type: 'boolean' } }, required: ['id', 'expected_path'] } },
   { name: 'terminal_assert', description: 'Assert terminal content.', inputSchema: { type: 'object', properties: { id: { type: 'string' }, contains: { type: 'string' }, not_contains: { type: 'string' }, matches: { type: 'string' }, line: { type: 'number' } }, required: ['id'] } },
 ];
+
+applyTerminalToolAnnotations(terminalTools);
 
 async function executeTerminalTool(name, args) {
   const text = (t) => ({ content: [{ type: 'text', text: t }] });
