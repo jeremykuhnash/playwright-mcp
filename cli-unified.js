@@ -345,34 +345,34 @@ function applyTerminalToolAnnotations(tools) {
 }
 
 const terminalTools = [
-  { name: 'terminal_spawn', description: 'Spawn a new tmux terminal session for TUI testing.', inputSchema: { type: 'object', properties: { command: { type: 'string' }, args: { type: 'array', items: { type: 'string' } }, cols: { type: 'number' }, rows: { type: 'number' }, cwd: { type: 'string' }, env: { type: 'object' } }, required: ['command'] } },
-  { name: 'terminal_send_keys', description: 'Send tmux key sequences (Enter, C-c, Escape, etc).', inputSchema: { type: 'object', properties: { id: { type: 'string' }, keys: { type: 'string' } }, required: ['id', 'keys'] } },
-  { name: 'terminal_send_text', description: 'Send literal text to terminal.', inputSchema: { type: 'object', properties: { id: { type: 'string' }, text: { type: 'string' } }, required: ['id', 'text'] } },
-  { name: 'terminal_snapshot', description: 'Capture terminal screen.', inputSchema: { type: 'object', properties: { id: { type: 'string' }, history: { type: 'boolean' }, ansi: { type: 'boolean' } }, required: ['id'] } },
-  { name: 'terminal_save', description: 'Save terminal to file.', inputSchema: { type: 'object', properties: { id: { type: 'string' }, path: { type: 'string' }, history: { type: 'boolean' }, ansi: { type: 'boolean' } }, required: ['id', 'path'] } },
-  { name: 'terminal_resize', description: 'Resize terminal.', inputSchema: { type: 'object', properties: { id: { type: 'string' }, cols: { type: 'number' }, rows: { type: 'number' } }, required: ['id', 'cols', 'rows'] } },
-  { name: 'terminal_kill', description: 'Kill terminal session.', inputSchema: { type: 'object', properties: { id: { type: 'string' } }, required: ['id'] } },
-  { name: 'terminal_list', description: 'List managed terminals.', inputSchema: { type: 'object', properties: {} } },
-  { name: 'terminal_wait', description: 'Wait for pattern in output.', inputSchema: { type: 'object', properties: { id: { type: 'string' }, pattern: { type: 'string' }, timeout: { type: 'number' } }, required: ['id', 'pattern'] } },
-  { name: 'terminal_wait_idle', description: 'Wait for terminal to be idle.', inputSchema: { type: 'object', properties: { id: { type: 'string' }, idle_ms: { type: 'number' }, timeout: { type: 'number' } }, required: ['id'] } },
-  { name: 'terminal_wait_prompt', description: 'Wait for shell prompt.', inputSchema: { type: 'object', properties: { id: { type: 'string' }, prompt_pattern: { type: 'string' }, timeout: { type: 'number' } }, required: ['id'] } },
-  { name: 'terminal_list_all', description: 'List ALL tmux sessions.', inputSchema: { type: 'object', properties: {} } },
-  { name: 'terminal_attach', description: 'Attach to existing tmux session.', inputSchema: { type: 'object', properties: { name: { type: 'string' } }, required: ['name'] } },
-  { name: 'terminal_detach', description: 'Detach from session without killing.', inputSchema: { type: 'object', properties: { id: { type: 'string' } }, required: ['id'] } },
-  { name: 'terminal_split', description: 'Split pane.', inputSchema: { type: 'object', properties: { id: { type: 'string' }, horizontal: { type: 'boolean' }, percent: { type: 'number' }, command: { type: 'string' } }, required: ['id'] } },
-  { name: 'terminal_list_panes', description: 'List panes in session.', inputSchema: { type: 'object', properties: { id: { type: 'string' } }, required: ['id'] } },
-  { name: 'terminal_select_pane', description: 'Select pane by index.', inputSchema: { type: 'object', properties: { id: { type: 'string' }, pane: { type: 'number' } }, required: ['id', 'pane'] } },
-  { name: 'terminal_send_to_pane', description: 'Send keys to specific pane.', inputSchema: { type: 'object', properties: { id: { type: 'string' }, pane: { type: 'number' }, keys: { type: 'string' } }, required: ['id', 'pane', 'keys'] } },
-  { name: 'terminal_capture_pane', description: 'Capture specific pane.', inputSchema: { type: 'object', properties: { id: { type: 'string' }, pane: { type: 'number' }, history: { type: 'boolean' }, ansi: { type: 'boolean' } }, required: ['id', 'pane'] } },
-  { name: 'terminal_new_window', description: 'Create new window.', inputSchema: { type: 'object', properties: { id: { type: 'string' }, name: { type: 'string' }, command: { type: 'string' } }, required: ['id'] } },
-  { name: 'terminal_list_windows', description: 'List windows.', inputSchema: { type: 'object', properties: { id: { type: 'string' } }, required: ['id'] } },
-  { name: 'terminal_select_window', description: 'Select window.', inputSchema: { type: 'object', properties: { id: { type: 'string' }, window: { type: 'number' } }, required: ['id', 'window'] } },
-  { name: 'terminal_record_start', description: 'Start recording session.', inputSchema: { type: 'object', properties: { id: { type: 'string' }, interval_ms: { type: 'number' } }, required: ['id'] } },
-  { name: 'terminal_record_stop', description: 'Stop recording.', inputSchema: { type: 'object', properties: { id: { type: 'string' } }, required: ['id'] } },
-  { name: 'terminal_record_save', description: 'Save recording to file.', inputSchema: { type: 'object', properties: { id: { type: 'string' }, path: { type: 'string' } }, required: ['id', 'path'] } },
-  { name: 'terminal_dump', description: 'Dump terminal state to JSON.', inputSchema: { type: 'object', properties: { id: { type: 'string' }, path: { type: 'string' }, include_history: { type: 'boolean' } }, required: ['id'] } },
-  { name: 'terminal_compare', description: 'Compare to saved dump.', inputSchema: { type: 'object', properties: { id: { type: 'string' }, expected_path: { type: 'string' }, ignore_whitespace: { type: 'boolean' } }, required: ['id', 'expected_path'] } },
-  { name: 'terminal_assert', description: 'Assert terminal content.', inputSchema: { type: 'object', properties: { id: { type: 'string' }, contains: { type: 'string' }, not_contains: { type: 'string' }, matches: { type: 'string' }, line: { type: 'number' } }, required: ['id'] } },
+  { name: 'terminal_spawn', description: 'TUI testing: Launch a new terminal session for CLI apps, TUI programs (vim, htop, btop), or interactive shells. Returns a session ID.', inputSchema: { type: 'object', properties: { command: { type: 'string' }, args: { type: 'array', items: { type: 'string' } }, cols: { type: 'number' }, rows: { type: 'number' }, cwd: { type: 'string' }, env: { type: 'object' } }, required: ['command'] } },
+  { name: 'terminal_send_keys', description: 'TUI testing: Send keyboard input (Enter, Escape, C-c, arrows, etc) to a terminal session.', inputSchema: { type: 'object', properties: { id: { type: 'string' }, keys: { type: 'string' } }, required: ['id', 'keys'] } },
+  { name: 'terminal_send_text', description: 'TUI testing: Type literal text into a terminal session.', inputSchema: { type: 'object', properties: { id: { type: 'string' }, text: { type: 'string' } }, required: ['id', 'text'] } },
+  { name: 'terminal_snapshot', description: 'TUI testing: Capture the current terminal screen as plain text. Returns what a user would see.', inputSchema: { type: 'object', properties: { id: { type: 'string' }, history: { type: 'boolean' }, ansi: { type: 'boolean' } }, required: ['id'] } },
+  { name: 'terminal_save', description: 'TUI testing: Save terminal screen content to a file for test artifacts.', inputSchema: { type: 'object', properties: { id: { type: 'string' }, path: { type: 'string' }, history: { type: 'boolean' }, ansi: { type: 'boolean' } }, required: ['id', 'path'] } },
+  { name: 'terminal_resize', description: 'TUI testing: Resize terminal to test responsive TUI layouts.', inputSchema: { type: 'object', properties: { id: { type: 'string' }, cols: { type: 'number' }, rows: { type: 'number' } }, required: ['id', 'cols', 'rows'] } },
+  { name: 'terminal_kill', description: 'TUI testing: End a terminal session and clean up.', inputSchema: { type: 'object', properties: { id: { type: 'string' } }, required: ['id'] } },
+  { name: 'terminal_list', description: 'TUI testing: List all active terminal sessions.', inputSchema: { type: 'object', properties: {} } },
+  { name: 'terminal_wait', description: 'TUI testing: Wait for text/pattern to appear in terminal output.', inputSchema: { type: 'object', properties: { id: { type: 'string' }, pattern: { type: 'string' }, timeout: { type: 'number' } }, required: ['id', 'pattern'] } },
+  { name: 'terminal_wait_idle', description: 'TUI testing: Wait until terminal output stops changing.', inputSchema: { type: 'object', properties: { id: { type: 'string' }, idle_ms: { type: 'number' }, timeout: { type: 'number' } }, required: ['id'] } },
+  { name: 'terminal_wait_prompt', description: 'TUI testing: Wait for a shell prompt to appear.', inputSchema: { type: 'object', properties: { id: { type: 'string' }, prompt_pattern: { type: 'string' }, timeout: { type: 'number' } }, required: ['id'] } },
+  { name: 'terminal_list_all', description: 'TUI testing: List all terminal sessions on the system including external ones.', inputSchema: { type: 'object', properties: {} } },
+  { name: 'terminal_attach', description: 'TUI testing: Attach to an existing external terminal session.', inputSchema: { type: 'object', properties: { name: { type: 'string' } }, required: ['name'] } },
+  { name: 'terminal_detach', description: 'TUI testing: Detach from a session without killing it.', inputSchema: { type: 'object', properties: { id: { type: 'string' } }, required: ['id'] } },
+  { name: 'terminal_split', description: 'TUI testing: Split terminal into multiple panes for parallel testing.', inputSchema: { type: 'object', properties: { id: { type: 'string' }, horizontal: { type: 'boolean' }, percent: { type: 'number' }, command: { type: 'string' } }, required: ['id'] } },
+  { name: 'terminal_list_panes', description: 'TUI testing: List all panes in a terminal session.', inputSchema: { type: 'object', properties: { id: { type: 'string' } }, required: ['id'] } },
+  { name: 'terminal_select_pane', description: 'TUI testing: Switch focus to a specific pane.', inputSchema: { type: 'object', properties: { id: { type: 'string' }, pane: { type: 'number' } }, required: ['id', 'pane'] } },
+  { name: 'terminal_send_to_pane', description: 'TUI testing: Send keyboard input to a specific pane without switching focus.', inputSchema: { type: 'object', properties: { id: { type: 'string' }, pane: { type: 'number' }, keys: { type: 'string' } }, required: ['id', 'pane', 'keys'] } },
+  { name: 'terminal_capture_pane', description: 'TUI testing: Read screen content from a specific pane.', inputSchema: { type: 'object', properties: { id: { type: 'string' }, pane: { type: 'number' }, history: { type: 'boolean' }, ansi: { type: 'boolean' } }, required: ['id', 'pane'] } },
+  { name: 'terminal_new_window', description: 'TUI testing: Create a new window (tab) in a terminal session.', inputSchema: { type: 'object', properties: { id: { type: 'string' }, name: { type: 'string' }, command: { type: 'string' } }, required: ['id'] } },
+  { name: 'terminal_list_windows', description: 'TUI testing: List all windows in a terminal session.', inputSchema: { type: 'object', properties: { id: { type: 'string' } }, required: ['id'] } },
+  { name: 'terminal_select_window', description: 'TUI testing: Switch to a specific window by index.', inputSchema: { type: 'object', properties: { id: { type: 'string' }, window: { type: 'number' } }, required: ['id', 'window'] } },
+  { name: 'terminal_record_start', description: 'TUI testing: Start recording a terminal session for playback.', inputSchema: { type: 'object', properties: { id: { type: 'string' }, interval_ms: { type: 'number' } }, required: ['id'] } },
+  { name: 'terminal_record_stop', description: 'TUI testing: Stop recording a terminal session.', inputSchema: { type: 'object', properties: { id: { type: 'string' } }, required: ['id'] } },
+  { name: 'terminal_record_save', description: 'TUI testing: Save terminal recording to a JSON file.', inputSchema: { type: 'object', properties: { id: { type: 'string' }, path: { type: 'string' } }, required: ['id', 'path'] } },
+  { name: 'terminal_dump', description: 'TUI testing: Export terminal state as JSON baseline for snapshot testing.', inputSchema: { type: 'object', properties: { id: { type: 'string' }, path: { type: 'string' }, include_history: { type: 'boolean' } }, required: ['id'] } },
+  { name: 'terminal_compare', description: 'TUI testing: Compare current terminal state against a saved baseline. Returns diff.', inputSchema: { type: 'object', properties: { id: { type: 'string' }, expected_path: { type: 'string' }, ignore_whitespace: { type: 'boolean' } }, required: ['id', 'expected_path'] } },
+  { name: 'terminal_assert', description: 'TUI testing: Assert terminal screen contains/excludes expected text or matches a regex pattern.', inputSchema: { type: 'object', properties: { id: { type: 'string' }, contains: { type: 'string' }, not_contains: { type: 'string' }, matches: { type: 'string' }, line: { type: 'number' } }, required: ['id'] } },
 ];
 
 applyTerminalToolAnnotations(terminalTools);
@@ -483,7 +483,7 @@ async function executeTerminalTool(name, args) {
 async function main() {
   // Spawn the original playwright MCP
   const playwrightArgs = process.argv.slice(2);
-  const playwright = spawn('node', [path.join(__dirname, 'cli.js'), ...playwrightArgs], {
+  const playwright = spawn('node', [path.join(__dirname, 'cli-playwright.js'), ...playwrightArgs], {
     stdio: ['pipe', 'pipe', 'inherit'],
   });
 
@@ -521,6 +521,14 @@ async function main() {
   rl.on('line', (line) => {
     try {
       const msg = JSON.parse(line);
+
+      // Intercept initialize response to add terminal instructions
+      if (msg.result?.serverInfo) {
+        const terminalInstructions = `This server also provides TUI testing tools (terminal_* prefix) for testing terminal/CLI/TUI applications like vim, htop, btop, nano, and custom TUI apps. TUI testing capabilities: terminal_spawn to launch sessions, terminal_send_keys/terminal_send_text for keyboard input, terminal_snapshot to read screen output, terminal_wait/terminal_wait_idle for synchronization, terminal_assert for test validation, terminal_compare/terminal_dump for snapshot testing, and terminal_record_* for session recording. Typical TUI testing workflow: terminal_spawn → send input → wait → snapshot → assert.`;
+        msg.result.instructions = msg.result.instructions
+          ? `${msg.result.instructions}\n\n${terminalInstructions}`
+          : terminalInstructions;
+      }
 
       // Intercept tools/list response to add our tools
       if (msg.result?.tools) {

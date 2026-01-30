@@ -702,7 +702,7 @@ function applyTerminalToolAnnotations(tools) {
 const terminalTools = [
   {
     name: 'terminal_spawn',
-    description: 'Spawn a new tmux terminal session for TUI testing. Returns a session ID. Use for CLI apps, TUI programs (btop, htop, vim), or shells.',
+    description: 'TUI testing: Launch a new terminal session. Use this to start CLI apps, TUI programs (vim, htop, btop, nano), interactive shells, or any terminal-based application for testing. Returns a session ID used by all other terminal_* tools.',
     inputSchema: {
       type: 'object',
       properties: {
@@ -718,19 +718,19 @@ const terminalTools = [
   },
   {
     name: 'terminal_send_keys',
-    description: 'Send tmux key sequences to a terminal. Use tmux key names like "Enter", "Escape", "C-c" (Ctrl+C), "Up", "Down", etc.',
+    description: 'TUI testing: Send keyboard input (special keys) to a terminal session. Use key names like "Enter", "Escape", "C-c" (Ctrl+C), "Up", "Down", "Tab", "Space", "BSpace", "C-d", "C-z", etc. For literal text, use terminal_send_text instead.',
     inputSchema: {
       type: 'object',
       properties: {
         id: { type: 'string', description: 'Session ID from terminal_spawn' },
-        keys: { type: 'string', description: 'Tmux key sequence (e.g., "Enter", "C-c", "Escape")' },
+        keys: { type: 'string', description: 'Key sequence (e.g., "Enter", "C-c", "Escape", "Up Up Enter")' },
       },
       required: ['id', 'keys'],
     },
   },
   {
     name: 'terminal_send_text',
-    description: 'Send literal text to a terminal (not interpreted as key names). Good for typing commands.',
+    description: 'TUI testing: Type literal text into a terminal session. The text is sent as-is without interpreting key names. Use this for typing commands, search queries, or any text input. For special keys like Enter or Ctrl+C, use terminal_send_keys instead.',
     inputSchema: {
       type: 'object',
       properties: {
@@ -742,7 +742,7 @@ const terminalTools = [
   },
   {
     name: 'terminal_snapshot',
-    description: 'Capture current terminal screen content as plain text. Uses tmux capture-pane.',
+    description: 'TUI testing: Capture the current terminal screen as plain text. Returns exactly what a user would see on the terminal display. Essential for verifying TUI state, reading command output, or checking what a CLI app is showing.',
     inputSchema: {
       type: 'object',
       properties: {
@@ -755,7 +755,7 @@ const terminalTools = [
   },
   {
     name: 'terminal_save',
-    description: 'Save terminal content to a file (ASCII dump). Can be used to save TUI state.',
+    description: 'TUI testing: Save terminal screen content to a file. Useful for capturing TUI state as test artifacts, saving command output, or creating reference snapshots for later comparison.',
     inputSchema: {
       type: 'object',
       properties: {
@@ -769,7 +769,7 @@ const terminalTools = [
   },
   {
     name: 'terminal_resize',
-    description: 'Resize a terminal session.',
+    description: 'TUI testing: Resize a terminal session to test responsive TUI layouts or simulate different terminal sizes.',
     inputSchema: {
       type: 'object',
       properties: {
@@ -782,7 +782,7 @@ const terminalTools = [
   },
   {
     name: 'terminal_kill',
-    description: 'Kill a terminal session and clean up.',
+    description: 'TUI testing: End a terminal session and clean up resources.',
     inputSchema: {
       type: 'object',
       properties: {
@@ -793,7 +793,7 @@ const terminalTools = [
   },
   {
     name: 'terminal_list',
-    description: 'List all active terminal sessions.',
+    description: 'TUI testing: List all active terminal sessions managed by this server.',
     inputSchema: {
       type: 'object',
       properties: {},
@@ -801,7 +801,7 @@ const terminalTools = [
   },
   {
     name: 'terminal_wait',
-    description: 'Wait for specific text/pattern to appear in terminal output.',
+    description: 'TUI testing: Wait for specific text or regex pattern to appear in terminal output. Use this to synchronize with command completion, wait for TUI elements to render, or confirm expected output before proceeding.',
     inputSchema: {
       type: 'object',
       properties: {
@@ -818,7 +818,7 @@ const terminalTools = [
   // ===========================================================================
   {
     name: 'terminal_list_all',
-    description: 'List ALL tmux sessions on the system, including those not created by this MCP. Shows which are managed.',
+    description: 'TUI testing: List all terminal sessions on the system, including ones not created by this server. Shows which sessions are managed vs external.',
     inputSchema: {
       type: 'object',
       properties: {},
@@ -826,7 +826,7 @@ const terminalTools = [
   },
   {
     name: 'terminal_attach',
-    description: 'Attach to an existing tmux session (not created by this MCP). Allows controlling external sessions.',
+    description: 'TUI testing: Attach to an existing external terminal session. Lets you control and monitor terminal sessions that were started outside this server.',
     inputSchema: {
       type: 'object',
       properties: {
@@ -837,7 +837,7 @@ const terminalTools = [
   },
   {
     name: 'terminal_detach',
-    description: 'Detach from a session (stop managing it) without killing it. Session continues running.',
+    description: 'TUI testing: Detach from a session without killing it. The terminal process continues running in the background.',
     inputSchema: {
       type: 'object',
       properties: {
@@ -852,7 +852,7 @@ const terminalTools = [
   // ===========================================================================
   {
     name: 'terminal_split',
-    description: 'Split the current pane into two. Creates a new pane either side-by-side (horizontal) or stacked (vertical).',
+    description: 'TUI testing: Split the terminal into multiple panes. Creates side-by-side (horizontal) or stacked (vertical) layouts for running multiple processes in one session.',
     inputSchema: {
       type: 'object',
       properties: {
@@ -866,7 +866,7 @@ const terminalTools = [
   },
   {
     name: 'terminal_list_panes',
-    description: 'List all panes in a session with their indices, sizes, and running commands.',
+    description: 'TUI testing: List all panes in a terminal session with their indices, sizes, and running commands.',
     inputSchema: {
       type: 'object',
       properties: {
@@ -877,7 +877,7 @@ const terminalTools = [
   },
   {
     name: 'terminal_select_pane',
-    description: 'Switch focus to a specific pane by index.',
+    description: 'TUI testing: Switch focus to a specific pane by index.',
     inputSchema: {
       type: 'object',
       properties: {
@@ -889,7 +889,7 @@ const terminalTools = [
   },
   {
     name: 'terminal_send_to_pane',
-    description: 'Send keys to a specific pane (by index) without switching focus.',
+    description: 'TUI testing: Send keyboard input to a specific pane without switching focus. Useful for controlling background processes in split layouts.',
     inputSchema: {
       type: 'object',
       properties: {
@@ -902,7 +902,7 @@ const terminalTools = [
   },
   {
     name: 'terminal_capture_pane',
-    description: 'Capture content from a specific pane by index.',
+    description: 'TUI testing: Read screen content from a specific pane. Like terminal_snapshot but targets a particular pane in a split layout.',
     inputSchema: {
       type: 'object',
       properties: {
@@ -916,7 +916,7 @@ const terminalTools = [
   },
   {
     name: 'terminal_new_window',
-    description: 'Create a new window (tab) in a session.',
+    description: 'TUI testing: Create a new window (tab) in a terminal session. Each window is a separate full-screen terminal.',
     inputSchema: {
       type: 'object',
       properties: {
@@ -929,7 +929,7 @@ const terminalTools = [
   },
   {
     name: 'terminal_list_windows',
-    description: 'List all windows in a session.',
+    description: 'TUI testing: List all windows (tabs) in a terminal session.',
     inputSchema: {
       type: 'object',
       properties: {
@@ -940,7 +940,7 @@ const terminalTools = [
   },
   {
     name: 'terminal_select_window',
-    description: 'Switch to a specific window by index.',
+    description: 'TUI testing: Switch to a specific window (tab) by index.',
     inputSchema: {
       type: 'object',
       properties: {
@@ -956,7 +956,7 @@ const terminalTools = [
   // ===========================================================================
   {
     name: 'terminal_wait_idle',
-    description: 'Wait until terminal output stops (no new output for specified duration). Useful for waiting for commands to complete.',
+    description: 'TUI testing: Wait until terminal output stops changing. Useful for waiting for a command to finish or a TUI to finish rendering before taking a snapshot.',
     inputSchema: {
       type: 'object',
       properties: {
@@ -969,7 +969,7 @@ const terminalTools = [
   },
   {
     name: 'terminal_wait_prompt',
-    description: 'Wait for a shell prompt pattern. Common patterns: "$", "#", ">".',
+    description: 'TUI testing: Wait for a shell prompt to appear (e.g., "$", "#", ">"). Use after running a command to know when the shell is ready for the next input.',
     inputSchema: {
       type: 'object',
       properties: {
@@ -986,7 +986,7 @@ const terminalTools = [
   // ===========================================================================
   {
     name: 'terminal_record_start',
-    description: 'Start recording terminal session. Captures all screen states at interval.',
+    description: 'TUI testing: Start recording a terminal session. Captures periodic screen snapshots for later playback, debugging, or test evidence.',
     inputSchema: {
       type: 'object',
       properties: {
@@ -998,7 +998,7 @@ const terminalTools = [
   },
   {
     name: 'terminal_record_stop',
-    description: 'Stop recording and return recording data.',
+    description: 'TUI testing: Stop recording a terminal session and return the captured frames.',
     inputSchema: {
       type: 'object',
       properties: {
@@ -1009,7 +1009,7 @@ const terminalTools = [
   },
   {
     name: 'terminal_record_save',
-    description: 'Save recording to file (JSON format with frames and timing).',
+    description: 'TUI testing: Save a terminal recording to a JSON file with frames and timing data.',
     inputSchema: {
       type: 'object',
       properties: {
@@ -1021,7 +1021,7 @@ const terminalTools = [
   },
   {
     name: 'terminal_dump',
-    description: 'Dump complete terminal state to JSON (screen, history, dimensions). Can be rehydrated later.',
+    description: 'TUI testing: Export complete terminal state as JSON (screen content, scrollback history, dimensions). Creates a baseline snapshot for use with terminal_compare.',
     inputSchema: {
       type: 'object',
       properties: {
@@ -1034,7 +1034,7 @@ const terminalTools = [
   },
   {
     name: 'terminal_compare',
-    description: 'Compare current terminal state against a saved dump. Returns diff.',
+    description: 'TUI testing: Compare current terminal state against a saved baseline dump. Returns a diff of differences. Use with terminal_dump for snapshot testing of TUI apps.',
     inputSchema: {
       type: 'object',
       properties: {
@@ -1047,7 +1047,7 @@ const terminalTools = [
   },
   {
     name: 'terminal_assert',
-    description: 'Assert terminal contains expected text. Useful for test validation.',
+    description: 'TUI testing: Assert that the terminal screen contains (or does not contain) expected text. Supports exact text matching, regex patterns, and line-specific checks. Use for validating TUI output in tests.',
     inputSchema: {
       type: 'object',
       properties: {
@@ -1610,7 +1610,21 @@ async function executeTerminalTool(name, args) {
 async function main() {
   const server = new Server(
     { name: 'playwright-xterm', version: '0.1.0' },
-    { capabilities: { tools: {} } }
+    {
+      capabilities: { tools: {} },
+      instructions: `TUI testing and terminal automation server. This server enables testing of TUI (Text User Interface) applications, CLI tools, and interactive terminal programs like vim, htop, btop, nano, and custom TUI apps.
+
+All tools are prefixed with terminal_* and support:
+- Launching terminal sessions (terminal_spawn) and sending keyboard input (terminal_send_keys, terminal_send_text)
+- Reading terminal screen output (terminal_snapshot) — captures exactly what a user sees
+- Waiting for expected output (terminal_wait), idle state (terminal_wait_idle), or shell prompts (terminal_wait_prompt)
+- TUI test assertions (terminal_assert) and snapshot comparison (terminal_compare with terminal_dump)
+- Multi-pane split layouts and multi-window sessions for parallel terminal testing
+- Session recording for debugging and test evidence (terminal_record_*)
+- Attaching to external terminal sessions (terminal_attach)
+
+Typical TUI testing workflow: terminal_spawn → terminal_send_keys/terminal_send_text → terminal_wait/terminal_wait_idle → terminal_snapshot → terminal_assert.`,
+    }
   );
 
   // Handle tool listing

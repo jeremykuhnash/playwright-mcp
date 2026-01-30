@@ -42,8 +42,8 @@
   },
   "bin": {
     "mcp-server-playwright": "cli.js",
-    "mcp-server-playwright-xterm": "cli-xterm.js",
-    "mcp-server-playwright-unified": "cli-unified.js"
+    "mcp-server-playwright-browser": "cli-playwright.js",
+    "mcp-server-playwright-xterm": "cli-xterm.js"
   },
   "devDependencies": {
     "@modelcontextprotocol/sdk": "^1.24.0",
